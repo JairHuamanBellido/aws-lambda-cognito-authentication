@@ -1,0 +1,48 @@
+service: aws-cognito-authentication
+
+frameworkVersion: "3"
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: us-east-2
+  deploymentPrefix: aws-cognito-authentication
+  deploymentBucket:
+    name: ${file(./env/variables.js):bucketName}
+
+  websocketsApiName: aws-cognito-authentication
+  websocketsApiRouteSelectionExpression: $request.body.action
+  websocketsDescription: Websocket handling connection to user authenticated
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource:
+        - arn:aws:dynamodb:*
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: aws-cognito-authentication-session
+        AttributeDefinitions:
+          - AttributeName: connectionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: connectionId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+functions:
+  onConnect:
+    handler: src/functions/onConnect.handler
+    events:
+      - websocket:
+          route: $connect
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
