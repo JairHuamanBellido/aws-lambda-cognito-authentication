@@ -18,4 +18,14 @@ export class SessionRepository extends DynamoDBRepository<SessionDynamoDB> {
 
     return res;
   }
+  async delete(id: string): Promise<boolean> {
+    const session = await this.db
+      .delete({
+        TableName: this.tableName,
+        Key: { connectionId: id },
+      })
+      .promise();
+
+    return !!session;
+  }
 }

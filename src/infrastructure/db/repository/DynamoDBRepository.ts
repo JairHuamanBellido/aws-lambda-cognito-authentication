@@ -13,4 +13,5 @@ export abstract class DynamoDBRepository<T> implements IDynamoDBRepository<T> {
   }
 
   abstract create(payload: T): Promise<T>;
+  abstract delete(id: string): Promise<boolean>;
 }

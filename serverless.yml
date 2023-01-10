@@ -42,6 +42,11 @@ functions:
     events:
       - websocket:
           route: $connect
+  onDisconnect:
+    handler: src/functions/onDisconnect.handler
+    events:
+      - websocket:
+          route: $disconnect
   userSessionConnect:
     handler: src/functions/userSessionConnect.handler
     events:
