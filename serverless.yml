@@ -42,6 +42,11 @@ functions:
     events:
       - websocket:
           route: $connect
+  userSessionConnect:
+    handler: src/functions/userSessionConnect.handler
+    events:
+      - websocket:
+          route: userSessionConnect
 
 plugins:
   - serverless-esbuild
